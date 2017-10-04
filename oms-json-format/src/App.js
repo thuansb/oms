@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import beautify from 'json-beautify';
+import formatTheInput from './utils/converter';
+import Editor from './components/Editor';
+import Displayer from './components/Displayer';
+
 import './App.css';
 
-const defaultInput = {
+// export this default data for unit test
+export const defaultInput = {
   "0":
   [{
     "id": 10,
@@ -77,38 +82,15 @@ class App extends Component {
   handleInputChange = (data) => {
     let isValid = true;
     let output;
+
     try {
-      const inputJson = JSON.parse(data);  
-
-      //TODO: check valid object
-
-      // flatten the object
-      const flatten = [];
-      Object.keys(inputJson).forEach(key => {
-        inputJson[key].forEach(item => {
-          flatten.push(item);
-        })
-      });
-
-      // Recursive function to find children
-      const findChildren = (id, inputs) => {
-        const result = [];
-        inputs.forEach(item => {
-          if (item.parent_id === id) {
-            item.children = findChildren(item.id, inputs);
-            result.push(item);
-          }
-        });
-        return result;
-      }
-
-      const jsonOutput = findChildren(null, flatten); 
-      output = beautify(jsonOutput, null, 2, FIXED_SPACES); 
+      const inputJson = JSON.parse(data);
+      output = beautify(formatTheInput(inputJson), null, 2, FIXED_SPACES);
     } catch (error) {
       isValid = false;
       output = '';
     }
-    
+
     this.setState({
       output,
       isValid
@@ -116,22 +98,19 @@ class App extends Component {
   }
 
   render() {
-    const InvalidInputMessage = <span className="App-main-editor--error">(not valid input data)</span>;
-
     return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">JSON Formatter Demo</h1>
         </header>
         <div className="App-main">
-          <div className="App-main-editor">
-            <div>Input (editable field) {!this.state.isValid && InvalidInputMessage}</div>
-            <textarea rows="35" cols={FIXED_SPACES} defaultValue={beautify(defaultInput, null, 2, FIXED_SPACES)} value={this.state.input} onChange={(e) => this.handleInputChange(e.target.value)} />
-          </div>
-          <div className="App-main-display">
-            <div>Output</div>
-            <textarea rows="35" cols={FIXED_SPACES} readOnly value={this.state.output} />
-          </div>
+          <Editor
+            defaultValue={beautify(defaultInput, null, 2, FIXED_SPACES)}
+            cols={FIXED_SPACES}
+            handleInputChange={this.handleInputChange}
+            isValid={this.state.isValid}
+          />
+          <Displayer cols={FIXED_SPACES} output={this.state.output} />
         </div>
       </div>
     );
