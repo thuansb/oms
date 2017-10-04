@@ -1,5 +1,5 @@
 .App-header {
-  background-color: #222;
+  background-color: #3B3C3D;
   padding: 3px;
   padding-left: 10px;
   color: white;
@@ -11,6 +11,8 @@
 
 .App-main {
   display: flex;
+  padding: 20px;
+  background-color: #AAD9FF; 
 }
 
 .App-main-editor {
@@ -23,4 +25,8 @@
 
 .App-main-display {
   flex: 1;
+}
+
+.App-main-display textarea {
+  background-color: #E3F3FF
 }
