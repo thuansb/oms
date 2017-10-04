@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import beautify from 'json-beautify';
 import './App.css';
 
 const defaultInput = {
@@ -56,6 +57,8 @@ const defaultInput = {
   }]
 };
 
+const FIXED_SPACES = 80;
+
 class App extends Component {
 
   constructor(props) {
@@ -99,7 +102,8 @@ class App extends Component {
         return result;
       }
 
-      output = JSON.stringify(findChildren(null, flatten)); 
+      const jsonOutput = findChildren(null, flatten); 
+      output = beautify(jsonOutput, null, 2, FIXED_SPACES); 
     } catch (error) {
       isValid = false;
       output = '';
@@ -122,11 +126,11 @@ class App extends Component {
         <div className="App-main">
           <div className="App-main-editor">
             <div>Input (editable field) {!this.state.isValid && InvalidInputMessage}</div>
-            <textarea rows="30" cols="80" defaultValue={JSON.stringify(defaultInput)} onChange={(e) => this.handleInputChange(e.target.value)} />
+            <textarea rows="35" cols={FIXED_SPACES} defaultValue={beautify(defaultInput, null, 2, FIXED_SPACES)} value={this.state.input} onChange={(e) => this.handleInputChange(e.target.value)} />
           </div>
           <div className="App-main-display">
             <div>Output</div>
-            <textarea rows="30" cols="80" readOnly value={this.state.output} />
+            <textarea rows="35" cols={FIXED_SPACES} readOnly value={this.state.output} />
           </div>
         </div>
       </div>
